@@ -1,66 +1,229 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# E-commerce Shop Application
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+An e-commerce application built with Laravel, featuring a RESTful API and an admin panel powered by Filament, Jetstream, and Livewire.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- RESTful API for products, cart, and orders
+- Admin panel for managing products, categories, orders, and users
+- Session-based shopping cart
+- User authentication and authorization
+- Order management system
+- Stock tracking
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Setup Instructions
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. Clone the repository
+```bash
+git clone <repository-url>
+cd shop
+```
 
-## Learning Laravel
+2. Install dependencies
+```bash
+valet use
+composer install
+nvm use
+npm install
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+3. Configure environment
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+4. Configure your database in `.env`:
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=shop
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+5. Run migrations and seed the database
+```bash
+php artisan migrate:fresh --seed
+```
 
-## Laravel Sponsors
+6. Start the development server
+```bash
+php artisan serve
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## API Documentation
 
-### Premium Partners
+### Authentication Endpoints
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+#### Register a new user
+```http
+POST /api/register
+Content-Type: application/json
 
-## Contributing
+{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "password": "password",
+    "password_confirmation": "password"
+}
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+#### Login
+```http
+POST /api/login
+Content-Type: application/json
 
-## Code of Conduct
+{
+    "email": "john@example.com",
+    "password": "password"
+}
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### Logout (requires authentication)
+```http
+POST /api/logout
+Authorization: Bearer {token}
+```
 
-## Security Vulnerabilities
+### Product Endpoints
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+#### List all products
+```http
+GET /api/products
+```
 
-## License
+#### Get specific product
+```http
+GET /api/products/{product}
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Cart Endpoints (requires authentication)
+
+#### Add to cart
+```http
+POST /api/cart/products/{product}
+Content-Type: application/json
+
+{
+    "quantity": 1
+}
+```
+
+#### View cart
+```http
+GET /api/cart
+```
+
+### Order Endpoints (requires authentication)
+
+#### List orders
+```http
+GET /api/orders
+Authorization: Bearer {token}
+```
+
+#### Place order
+```http
+POST /api/orders
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+    "shipping_address": "123 Ship St",
+    "billing_address": "123 Bill St",
+    "payment_method": "credit_card"
+}
+```
+
+## Frontend Features
+
+### Orders List
+The frontend includes a Livewire-powered orders list that provides real-time updates:
+
+1. **View Location**
+   - Access the orders list at `/dashboard`
+   - Automatically updates when orders change
+
+2. **Features**
+   - Real-time order status updates
+   - Sort by order date, status, or total
+   - Filter orders by status
+   - View order details including items and pricing
+
+3. **Implementation**
+   - Built with Livewire for dynamic updates
+   - Uses Filament tables for sorting and filtering
+   - Responsive design for all screen sizes
+
+## Admin Panel Usage
+
+### Accessing the Admin Panel
+
+1. Visit `/admin` in your browser
+2. Login with admin credentials:
+   - Email: admin@example.com
+   - Password: password
+
+### Available Sections
+
+1. **Products Management**
+   - Create, edit, and delete products
+   - Manage stock levels
+   - Set prices and categories
+   - Toggle product visibility
+
+2. **Categories Management**
+   - Create and organize product categories
+   - Enable/disable categories
+   - View products in each category
+
+3. **Orders Management**
+   - View all orders
+   - Update order status
+   - Manage payment status
+   - View order details and items
+
+4. **User Management**
+   - Create and manage users
+   - Set admin privileges
+   - Reset passwords
+
+## Design Decisions and Assumptions
+
+1. **Authentication**
+   - Using Laravel Sanctum for API authentication
+   - Token-based authentication for API endpoints
+   - Session-based authentication for admin panel
+   - Only admin users can access the admin panel
+
+2. **Cart Implementation**
+   - Database-backed cart storage for persistence
+   - Cart items linked to users via foreign keys
+   - Supports both web and API access
+   - Real-time stock validation during checkout
+
+3. **Order System**
+   - Orders are immutable after creation
+   - Only admins can update order status
+   - Stock is automatically adjusted upon order placement
+   - Basic order statuses: pending, processing, completed, cancelled
+
+4. **Product Management**
+   - Products must belong to a category
+   - SKU must be unique
+   - Stock levels are tracked
+   - Products can be active/inactive
+
+5. **Security Considerations**
+   - Input validation on all endpoints
+   - CSRF protection for web routes
+   - Rate limiting on authentication endpoints
+   - Role-based access control for admin features
+
+## Testing
+
+Run the test suite:
+```bash
+php artisan test

@@ -16,6 +16,9 @@
 
         <!-- Styles -->
         @livewireStyles
+
+        @filamentStyles
+        @filamentScripts
     </head>
     <body class="font-sans antialiased">
         <x-banner />

@@ -11,9 +11,13 @@
 |
 */
 
-pest()->extend(Tests\TestCase::class)
-    ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
-    ->in('Feature');
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+uses(
+    TestCase::class,
+    RefreshDatabase::class,
+)->in('Feature', 'Unit');
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +33,6 @@ pest()->extend(Tests\TestCase::class)
 expect()->extend('toBeOne', function () {
     return $this->toBe(1);
 });
-
 /*
 |--------------------------------------------------------------------------
 | Functions
@@ -41,7 +44,7 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+function db()
 {
-    // ..
+    return app('db');
 }
